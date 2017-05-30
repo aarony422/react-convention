@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
-import { increment, doubleAsync } from '../modules/dashboard'
+import { dashboardVisitIncrement } from '../modules/dashboard'
+import React from 'react'
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -12,14 +13,15 @@ import Dashboard from '../components/Dashboard'
     Keys will be passed as props to presentational components. Here we are
     implementing our wrapper around increment; the component doesn't care   */
 
-const mapDispatchToProps = {
-  increment : () => increment(1),
-  doubleAsync
+const mapActionCreators = {
+  dashboardVisitIncrement: () => dashboardVisitIncrement(1)
 }
 
-const mapStateToProps = (state) => ({
-  dashboard : state.dashboard
-})
+const mapStateToProps = (state) => {
+  return {
+    dashboard: state.dashboard
+  }
+}
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
 
@@ -35,4 +37,16 @@ const mapStateToProps = (state) => ({
     Selectors are composable. They can be used as input to other selectors.
     https://github.com/reactjs/reselect    */
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+class DashboardContainer extends React.Component {
+  componentDidMount() {
+    this.props.dashboardVisitIncrement();
+  }
+
+  render() {
+    return (
+      <Dashboard {...this.props} />
+    )
+  }
+}
+
+export default connect(mapStateToProps, mapActionCreators)(DashboardContainer)
